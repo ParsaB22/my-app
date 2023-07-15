@@ -9,6 +9,8 @@ import PassVerified from "./pages/PassVerified";
 import PasswordCode from "./pages/PasswordCode";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import BackButt from "./components/BackButton";
+import Page from "./pages/EmptyPageTemplate";
 const Stack = createNativeStackNavigator();
 
 // Collaberate together to make the design better below:
@@ -23,6 +25,7 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
+    // <Page />
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen

@@ -7,8 +7,14 @@ import {
   SafeAreaView,
   TouchableHighlight,
   TextInput,
+  Platform,
+  StatusBar,
 } from "react-native";
-import { sendVerificationEmail } from "./EmailVerification";
+import {
+  sendVerificationEmail,
+  generateRandomNumber,
+} from "./EmailVerification";
+import BackButt from "../components/BackButton";
 
 //somehow store the code the was sent to email.
 //have onPress for Verify button handle if the code from email matches user input let them change their password
@@ -17,36 +23,54 @@ import { sendVerificationEmail } from "./EmailVerification";
 
 export default function PasswordCode({ navigation, route }) {
   const { email } = route.params;
-  const [verificationCode, setVerificationCode] = useState("");
+  const [verificationCode, setVerificationCode] = useState(
+    generateRandomNumber()
+  );
   const [userInputCode, setUserInputCode] = useState("");
-  console.log(email);
+
+  // console.log(verificationCode);
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const [validState, setValidState] = useState(false);
+  // console.log(email);
 
   // Send the verification email when page loads
   useEffect(() => {
-    sendVerificationEmail(email);
+    sendVerificationEmail(email, verificationCode, "template_dwgx14q");
   }, []);
 
   // Function to resend a different verification code
   const handleResendCode = () => {
-    sendVerificationEmail(email);
+    setVerificationCode(generateRandomNumber());
+    sendVerificationEmail(email, verificationCode, "template_dwgx14q");
   };
 
   // Function to handle verification
   const handleVerification = () => {
-    // Implement code to check if the entered code matches the verificationCode
-    // If the codes match send accountData to database
-    // Otherwise, display an error message or take appropriate action
-    console.log("Verification code:", verificationCode, userInputCode);
-    console.log("Registration successful");
-    //
-    // Navigate to the next screen
-    navigation.navigate("NewPassword", { email });
+    if (userInputCode === "") {
+      setValidState(true);
+      setErrorMessage("Please enter Verification code");
+      return;
+    }
+    if (verificationCode == userInputCode) {
+      console.log("Verification code matches");
+      // Proceed with account registration and data storage in the database HERE
+      navigation.navigate("NewPassword", { email });
+    } else {
+      setValidState(true);
+      setErrorMessage("Verification code does not match");
+      console.log("Verification code does not match");
+      return;
+      // Display an error message or take appropriate action
+    }
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.box}>
         {/*will be a box for now*/}
+        <BackButt navigation={navigation} />
+
         <Text style={{ alignSelf: "center" }}>Verify Your Email</Text>
         <View style={styles.mail} />
       </View>
@@ -59,9 +83,18 @@ export default function PasswordCode({ navigation, route }) {
         style={styles.inp}
         onChangeText={(val) => setUserInputCode(val)}
       />
-      <TouchableOpacity onPress={handleVerification} style={styles.button}>
-        <Text style={styles.paragraph}>Verify</Text>
-      </TouchableOpacity>
+      <View style={validState ? { marginTop: 15 } : { marginTop: 40 }}>
+        {validState && (
+          <View>
+            <Text style={[styles.invalid, { marginBottom: 5 }]}>
+              {errorMessage}
+            </Text>
+          </View>
+        )}
+        <TouchableOpacity onPress={handleVerification} style={styles.button}>
+          <Text style={styles.paragraph}>Verify</Text>
+        </TouchableOpacity>
+      </View>
       <TouchableOpacity onPress={handleResendCode}>
         <Text style={styles.textButt}>
           <Text style={{ color: "#B8F14A" }}>Resend</Text> Code
@@ -85,6 +118,7 @@ const styles = StyleSheet.create({
     // justifyContent: 'center',
     // alignContent:'center',
     backgroundColor: "#2C2C2E",
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 0,
   },
   inp: {
     marginTop: 7,
@@ -110,7 +144,7 @@ const styles = StyleSheet.create({
     color: "#FFFFFF",
   },
   button: {
-    marginTop: 40,
+    // marginTop: 40,
     marginBottom: 15,
     backgroundColor: "#B8F14A",
     borderRadius: 10,
@@ -142,5 +176,13 @@ const styles = StyleSheet.create({
     borderColor: "#000000",
     margin: 20,
     alignSelf: "center",
+  },
+  invalid: {
+    // marginTop: 10,
+    padding: 5,
+    fontSize: 12,
+    fontWeight: "bold",
+    textAlign: "center",
+    color: "#FF0000",
   },
 });

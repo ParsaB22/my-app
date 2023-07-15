@@ -10,6 +10,7 @@ import {
   ScrollView,
   Button,
 } from "react-native";
+import BackButt from "../components/BackButton";
 
 //i think just need to fetch from database to check if username exists
 //so probably need a function here for the onPress the Login button that handles that
@@ -19,6 +20,8 @@ export default function Login({ navigation }) {
 
   return (
     <SafeAreaView style={styles.container}>
+      <BackButt navigation={navigation} />
+
       <View>
         <ScrollView>
           <View style={styles.circle} />

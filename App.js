@@ -7,17 +7,27 @@ import ForgotPassword from "./pages/ForgotPassword";
 import NewPass from "./pages/NewPassword";
 import PassVerified from "./pages/PassVerified";
 import PasswordCode from "./pages/PasswordCode";
+import BackButt from "./components/BackButton";
+// import CatagoriesPage from "./pages/Catagories";
+// import RoutinePage from "./pages/RoutinePage";
+// import RoutineWorkouts from "./pages/RoutineWorkouts";
+// import CatagoryWorkouts from "./pages/CatagoryWorkouts";
+// import WorkoutDetails from "./pages/WorkoutDetails";
+
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import BackButt from "./components/BackButton";
-import Page from "./pages/EmptyPageTemplate";
-const Stack = createNativeStackNavigator();
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
+const Stack = createNativeStackNavigator();
+const Tabs = createBottomTabNavigator();
 // Collaberate together to make the design better below:
 // make navigation transitions better
 //get better way to get svg images
 //work on navigation propertys
-
+import HomePage from "./pages/Home";
+import RoutineNav from "./pages/BottomNavBar.js/RoutineNav";
+import ExerciseNav from "./pages/BottomNavBar.js/ExerciseNav";
+import ProfilePage from "./pages/Profile";
 //Paths
 //StartUp -> login -> Home(home not yet created)
 //Startup -> login -> forgotPassword -> PasswordCode -> NewPassword -> pass Verified -> login
@@ -25,7 +35,32 @@ const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    // <Page />
+    // <NavigationContainer>
+    //   <Tabs.Navigator>
+    //     <Tabs.Screen
+    //       name="Home"
+    //       component={HomePage}
+    //       options={{ headerShown: false }}
+    //     />
+    //     <Tabs.Screen
+    //       name="Routine"
+    //       component={RoutineNav}
+    //       options={{ headerShown: false }}
+    //     />
+    //     <Tabs.Screen
+    //       name="Exercise"
+    //       component={ExerciseNav}
+    //       options={{ headerShown: false }}
+    //     />
+    //     <Tabs.Screen
+    //       name="Profile"
+    //       component={ProfilePage}
+    //       options={{ headerShown: false }}
+    //     />
+    //   </Tabs.Navigator>
+    // </NavigationContainer>
+    // <CatagoriesPage />
+
     <NavigationContainer>
       <Stack.Navigator>
         <Stack.Screen

@@ -17,6 +17,60 @@ import BackButt from "../components/BackButton";
 export default function Login({ navigation }) {
   const [userVal, setUserVal] = useState("");
   const [passVal, setPassVal] = useState("");
+  let bp = require("../components/Path.js");
+  var storage = require("../tokenStorage.js");
+
+  var loginName;
+  var loginPassword;
+
+  const doLogin = async (event) => {
+    var obj = { login: userVal, password: passVal };
+    var js = JSON.stringify(obj);
+
+    try {
+      const response = await fetch(bp.buildPath("api/login"), {
+        method: "POST",
+        body: js,
+        headers: { "Content-Type": "application/json" },
+      });
+
+      var res = JSON.parse(await response.text());
+
+      if (res.id <= 0) {
+        setValidState(true);
+        setErrorMessage("User/Password combination incorrect");
+        console.log("User/Password combination incorrect");
+        return;
+      } else {
+        storage.storeToken(res.accessToken);
+
+        let userId = res.id;
+        let firstName = res.fn;
+        let lastName = res.ln;
+        let userName = res.un;
+        let password = res.pw;
+        let email = res.em;
+
+        var user = {
+          firstName: res.fn,
+          lastName: res.ln,
+          id: res.id,
+          userName: res.un,
+          password: res.pw,
+          email: res.em,
+        };
+
+        localStorage.setItem("user_data", JSON.stringify(user));
+
+        setMessage("");
+        // window.location.href = '/cards';
+        window.location.href = "/profile";
+      }
+    } catch (e) {
+      alert(e.toString());
+      return;
+    }
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -40,7 +94,12 @@ export default function Login({ navigation }) {
             placeholder="Ex. $Password123"
             secureTextEntry={true}
           />
-          <TouchableOpacity onPress={() => {}} style={styles.button}>
+          <TouchableOpacity
+            onPress={() => {
+              doLogin();
+            }}
+            style={styles.button}
+          >
             <Text style={styles.paragraph}>Login</Text>
           </TouchableOpacity>
           <TouchableOpacity>

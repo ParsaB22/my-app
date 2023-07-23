@@ -11,6 +11,7 @@ import {
   Image,
 } from "react-native";
 import { catdata } from "../components/CatData";
+import { ImageData } from "../components/ImageData";
 
 export default function CatagoriesPage({ navigation, route }) {
   // console.log(route.params?.index);
@@ -25,7 +26,7 @@ export default function CatagoriesPage({ navigation, route }) {
       >
         <View style={styles.imageContainer}>
           <Image
-            source={require("../assets/CatPics/Abs.png")}
+            source={ImageData[cat.name.toLowerCase().replace(/\s+/g, "")]}
             style={styles.imageStyle}
           />
         </View>
@@ -52,7 +53,7 @@ export default function CatagoriesPage({ navigation, route }) {
           }}
         >
           {/* Back Button Below */}
-          <TouchableOpacity
+          {/* <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={{
               width: 50,
@@ -70,7 +71,7 @@ export default function CatagoriesPage({ navigation, route }) {
             >
               B
             </Text>
-          </TouchableOpacity>
+          </TouchableOpacity> */}
           <Text style={styles.headerTitle}>Catagories</Text>
           {/* <TouchableOpacity onPress={} style={styles.addButton}>
           <Text style={styles.addButtonIcon}>+</Text>

@@ -5,12 +5,7 @@ export const catdata = [
   {
     name: "All Workouts",
     workouts: [
-      {
-        workoutName: "Bench Press",
-        set: 0,
-        reps: 0,
-        weight: 0,
-      },
+      { workoutName: "Bench Press", set: 0, reps: 0, weight: 0 },
       { workoutName: "Barbel Bench Press", set: 0, reps: 0, weight: 0 },
       { workoutName: "Incline Dumbbell bench", set: 0, reps: 0, weight: 0 },
       { workoutName: "Push-Ups", set: 0, reps: 0, weight: 0 },

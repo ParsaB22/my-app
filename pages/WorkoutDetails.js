@@ -11,14 +11,15 @@ import {
   Image,
 } from "react-native";
 // import { catdata } from "../components/CatData";
+import { ImageData } from "../components/ImageData";
 
 export default function WorkoutDetails({ navigation, route }) {
   const { adding } = route.params;
   const { workout } = route.params;
   const [newWorkout, setNewWorkout] = useState(workout);
 
-  //   console.log(newWorkout);
-  //   console.log(workout);
+  console.log(newWorkout);
+  console.log(workout);
   return (
     <View style={styles.container}>
       <View style={styles.headerBox}>
@@ -52,9 +53,8 @@ export default function WorkoutDetails({ navigation, route }) {
           <Text style={styles.headerTitle}>{workout.workoutName}</Text>
         </View>
       </View>
-      {/* Must make into FlatList */}
       {/* adding option */}
-      {adding === "true" && (
+      {adding === "true" ? (
         <ScrollView>
           <View>
             <Text style={[styles.detailsText]}>Sets</Text>
@@ -150,12 +150,40 @@ export default function WorkoutDetails({ navigation, route }) {
               </TouchableOpacity>
             </View>
           </View>
-          <TouchableOpacity style={styles.button}>
+          <TouchableOpacity
+            // onPress={() => navigation.navigate("RoutineWorkouts")}
+            style={styles.button}
+          >
             <Text style={styles.paragraph}>Add</Text>
           </TouchableOpacity>
         </ScrollView>
+      ) : (
+        // {/* looking at detail option */}
+        <View
+          style={{
+            // backgroundColor: "#ffffff",
+            // justifyContent: "center",
+            alignItems: "center",
+            // alignContent: "space-between",
+          }}
+        >
+          <Image
+            source={
+              ImageData[
+                workout.workoutName.toLowerCase().replace(/\s+/g, "") +
+                  "details"
+              ]
+            }
+          />
+          <Text style={[styles.paragraph, { color: "#ffffff" }]}>
+            {
+              ImageData[
+                workout.workoutName.toLowerCase().replace(/\s+/g, "") + "text"
+              ]
+            }
+          </Text>
+        </View>
       )}
-      {/* looking at detail option */}
     </View>
   );
 }
@@ -229,7 +257,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-evenly",
     alignItems: "center",
-    marginBottom: 30,
+    marginBottom: 20,
     marginTop: 20,
   },
   detailsText: {

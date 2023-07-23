@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -9,6 +9,7 @@ import {
   // FlatList,
   ScrollView,
 } from "react-native";
+import axios from "axios";
 
 export default function RoutinePage({ navigation, route }) {
   const [showAddOptions, setShowAddOptions] = useState(false);
@@ -17,6 +18,30 @@ export default function RoutinePage({ navigation, route }) {
 
   // console.log(route.params?.index);
   const [showInputName, setShowInputName] = useState(false);
+
+  let bp = require("../components/Path.js");
+
+  // const fetchRoutines = async () => {
+  //   try {
+  //     // Replace 'your-api-endpoint' with the actual API endpoint on your server
+  //     // const response = await axios.get(bp.buildPath("api/searchRoutines"));
+  //     const response = await fetch(bp.buildPath("api/searchRoutines"), {
+  //       method: "GET",
+  //       body: js,
+  //       headers: { "Content-Type": "application/json" },
+  //     });
+  //     console.log(response);
+  //     const { data } = response;
+  //     setRoutines(data); // Update the routines state with the fetched data
+  //   } catch (error) {
+  //     console.error("Error fetching routines:", error);
+  //   }
+  // };
+
+  // // Call the fetchRoutines function when the component mounts
+  // useEffect(() => {
+  //   fetchRoutines();
+  // }, []);
 
   const handleAddButton = () => {
     setShowAddOptions(true);
@@ -55,7 +80,7 @@ export default function RoutinePage({ navigation, route }) {
         key={index}
         onPress={() => {
           // Handle navigation to the page where workouts can be added to the selected routine
-          navigation.navigate("RoutineWorkouts", { routine, index });
+          navigation.navigate("RoutineWorkouts", { routine });
           // console.log("Navigate to routine page:", routine.name);
         }}
         style={styles.routineBox}

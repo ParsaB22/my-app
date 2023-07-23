@@ -11,6 +11,7 @@ import {
   Image,
 } from "react-native";
 // import { catdata } from "../components/CatData";
+import { ImageData } from "../components/ImageData";
 
 // NEED TO FIX TEXT WRAPING DOWN
 
@@ -31,9 +32,7 @@ export default function CatagoryWorkouts({ navigation, route }) {
         <View style={styles.imageContainer}>
           <Image
             source={
-              {
-                /*workout.image*/
-              }
+              ImageData[workout.workoutName.toLowerCase().replace(/\s+/g, "")]
             }
             style={styles.imageStyle}
           />

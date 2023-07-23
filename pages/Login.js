@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import {
   Text,
   View,
@@ -11,30 +11,41 @@ import {
   Button,
 } from "react-native";
 import BackButt from "../components/BackButton";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AuthContext } from "./context/AuthContext";
 
 //i think just need to fetch from database to check if username exists
 //so probably need a function here for the onPress the Login button that handles that
 export default function Login({ navigation }) {
+  const { login } = useContext(AuthContext);
+
   const [userVal, setUserVal] = useState("");
   const [passVal, setPassVal] = useState("");
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const [validState, setValidState] = useState(false);
+
+  const [message, setMessage] = useState("");
+
   let bp = require("../components/Path.js");
   var storage = require("../tokenStorage.js");
-
-  var loginName;
-  var loginPassword;
 
   const doLogin = async (event) => {
     var obj = { login: userVal, password: passVal };
     var js = JSON.stringify(obj);
+    console.log(js);
 
     try {
+      // const response = await fetch("http://localhost:5000/api/login", {
       const response = await fetch(bp.buildPath("api/login"), {
         method: "POST",
         body: js,
         headers: { "Content-Type": "application/json" },
       });
 
+      console.log("Response Status:" + response.status);
       var res = JSON.parse(await response.text());
+      // console.log(res);
 
       if (res.id <= 0) {
         setValidState(true);
@@ -42,7 +53,8 @@ export default function Login({ navigation }) {
         console.log("User/Password combination incorrect");
         return;
       } else {
-        storage.storeToken(res.accessToken);
+        // console.log(res.accessToken);
+        storage.storeToken(res);
 
         let userId = res.id;
         let firstName = res.fn;
@@ -50,6 +62,7 @@ export default function Login({ navigation }) {
         let userName = res.un;
         let password = res.pw;
         let email = res.em;
+        // console.log(res.em);
 
         var user = {
           firstName: res.fn,
@@ -59,15 +72,17 @@ export default function Login({ navigation }) {
           password: res.pw,
           email: res.em,
         };
+        // console.log(user);
 
-        localStorage.setItem("user_data", JSON.stringify(user));
+        await AsyncStorage.setItem("user_data", JSON.stringify(user));
 
         setMessage("");
         // window.location.href = '/cards';
-        window.location.href = "/profile";
+        login();
       }
     } catch (e) {
-      alert(e.toString());
+      console.log(e.toString());
+      // alert(e.toString());
       return;
     }
   };
@@ -97,6 +112,7 @@ export default function Login({ navigation }) {
           <TouchableOpacity
             onPress={() => {
               doLogin();
+              //login();
             }}
             style={styles.button}
           >

@@ -15,11 +15,44 @@ import { ImageData } from "../components/ImageData";
 
 export default function WorkoutDetails({ navigation, route }) {
   const { adding } = route.params;
+  const { routine } = route.params;
   const { workout } = route.params;
   const [newWorkout, setNewWorkout] = useState(workout);
 
-  console.log(newWorkout);
-  console.log(workout);
+  let bp = require("../components/Path.js");
+
+  const addWorkout = async (event) => {
+    // console.log("routines:" + routines);
+    // console.log("R length:" + routines.length);
+    var obj = {
+      routineID: routine.routineID,
+      workoutID: newWorkout.workoutName,
+      numSets: newWorkout.set,
+      numRepsPerSet: newWorkout.reps,
+      weightLifted: newWorkout.weight,
+    };
+    var js = JSON.stringify(obj);
+    try {
+      const response = await fetch(bp.buildPath("api/addWorkout"), {
+        method: "POST",
+        body: js,
+        headers: { "Content-Type": "application/json" },
+      });
+      // console.log(response);
+      var data = JSON.parse(await response.text());
+      // console.log(data);
+      if (data.error.length > 0) {
+        console.log("Unable to add Workout");
+      } else {
+        console.log("Workout has been added");
+      }
+    } catch (error) {
+      console.error("Error adding routine:", error);
+    }
+  };
+
+  // console.log(newWorkout);
+  // console.log(workout);
   return (
     <View style={styles.container}>
       <View style={styles.headerBox}>
@@ -151,7 +184,10 @@ export default function WorkoutDetails({ navigation, route }) {
             </View>
           </View>
           <TouchableOpacity
-            // onPress={() => navigation.navigate("RoutineWorkouts")}
+            onPress={() => {
+              addWorkout();
+              navigation.navigate("RoutineWorkouts", { routine });
+            }}
             style={styles.button}
           >
             <Text style={styles.paragraph}>Add</Text>

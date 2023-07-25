@@ -43,9 +43,9 @@ export default function Login({ navigation }) {
         headers: { "Content-Type": "application/json" },
       });
 
-      console.log("Response Status:" + response.status);
+      console.log();
       var res = JSON.parse(await response.text());
-      // console.log(res);
+      console.log(res);
 
       if (res.id <= 0) {
         setValidState(true);

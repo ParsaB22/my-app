@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -11,21 +11,115 @@ import {
 } from "react-native";
 import BackButt from "../components/BackButton";
 import { catdata } from "../components/CatData";
+import { useIsFocused } from "@react-navigation/native";
 
 const RoutineWorkouts = ({ navigation, route }) => {
   //   console.log(route.params);
   const { routine } = route.params;
-  const { index } = route.params;
-  const [workoutss, setWorkoutss] = useState(routine.workouts);
+  const [workouts, setWorkouts] = useState([]);
+  const isFocused = useIsFocused();
 
-  const [showDetails, setShowDetails] = useState(
-    Array(routine.workouts.length).fill(false)
-  );
+  const [showDetails, setShowDetails] = useState("");
+  const [dayss, setDays] = useState(routine.days);
+  // Array(routine.workouts.length).fill(false)
 
-  //   console.log(index);
-  //   routine.name = "Hoe";
+  // console.log(dayss);
+  let bp = require("../components/Path.js");
+  const fetchWorkouts = async () => {
+    var obj = { routineId: routine.routineID };
+    var js = JSON.stringify(obj);
+    // console.log(js);
+    try {
+      const response = await fetch(bp.buildPath("api/searchWorkouts"), {
+        method: "POST",
+        body: js,
+        headers: { "Content-Type": "application/json" },
+      });
+      var data = JSON.parse(await response.text());
+
+      // console.log(data);
+      setWorkouts(data.results); // Update the routines state with the fetched data
+    } catch (error) {
+      console.error("Error fetching routines:", error);
+    }
+  };
+
+  const deleteWorkout = async (id) => {
+    try {
+      // Make a DELETE request to the API endpoint with the workoutId to be deleted
+      const response = await fetch(bp.buildPath(`api/deleteworkout/${id}`), {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        console.log("Workout deleted successfully");
+        // Perform any additional actions after successful deletion
+      } else {
+        console.log("Failed to delete workout");
+        // Handle the error or display a message to the user
+      }
+      fetchWorkouts();
+    } catch (error) {
+      console.error("Error deleting workout:", error);
+    }
+  };
+
+  const handleDayClick = (index) => {
+    // Create a copy of the days array to avoid mutating the state directly
+    const updatedDays = [...dayss];
+    // Toggle the value between 0 and 1 for the clicked day
+    updatedDays[index] = updatedDays[index] === 0 ? 1 : 0;
+    // Update the state with the new days array
+    setDays(updatedDays);
+    // Call the function to update the routine with the new days array
+  };
+
+  const updateRoutine = async (event) => {
+    // console.log(routine);
+    var obj = {
+      userId: routine.userID,
+      routineId: routine.routineID,
+      name: routine.name,
+      days: dayss,
+    };
+    var js = JSON.stringify(obj);
+    // console.log(js);
+    try {
+      const response = await fetch(bp.buildPath("api/updateRoutine"), {
+        method: "POST",
+        body: js,
+        headers: { "Content-Type": "application/json" },
+      });
+      // console.log(response);
+      var data = JSON.parse(await response.text());
+      // console.log(data);
+      if (response.ok) {
+        console.log("Routine has been updated");
+      } else {
+        console.log("Unable to update routine");
+      }
+    } catch (error) {
+      console.error("Error updating routine:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchWorkouts();
+  }, []);
+
+  useEffect(() => {
+    // Fetch workouts whenever the page gains focus (i.e., whenever you navigate to this page)
+    if (isFocused) {
+      fetchWorkouts();
+    }
+  }, [isFocused]);
+  // console.log(workouts);
+  useEffect(() => {
+    // console.log("Updated dayss:", dayss);
+    updateRoutine();
+  }, [dayss]);
+
   const renderWorkoutBoxes = () => {
-    return routine.workouts.map((workout, index) => (
+    return workouts.map((workout, index) => (
       <View
         key={index}
         style={{ backgroundColor: "#000000", margin: 20, borderRadius: 20 }}
@@ -35,38 +129,59 @@ const RoutineWorkouts = ({ navigation, route }) => {
           onPress={() => {
             // Handle navigation to the page where workouts can be added to the selected routine
             //   navigation.navigate("RoutineWorkouts", { routine, index });
-            // console.log("Navigate to routine page:", routine.name);
-            const updatedShowDetails = [...showDetails];
-            updatedShowDetails[index] = !updatedShowDetails[index];
-            setShowDetails(updatedShowDetails);
+            // // console.log("Navigate to routine page:", routine.name);
+            /////////////////////////////////////////////////////////
+            // const updatedShowDetails = [...showDetails];
+            // updatedShowDetails[index] = !updatedShowDetails[index];
+            // setShowDetails(updatedShowDetails);
           }}
           style={styles.routineBox}
         >
-          {/* <TouchableOpacity
-            style={[styles.days, { backgroundColor: "#FF0000" }]}
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              alignItems: "center",
+            }}
           >
-            <Text
-              style={{ textAlign: "center", fontWeight: "bold", fontSize: 20 }}
+            <TouchableOpacity
+              style={[
+                styles.days,
+                { backgroundColor: "#FF0000", position: "absolute", left: 0 },
+              ]}
+              onPress={() => {
+                deleteWorkout(workout._id);
+                fetchWorkouts();
+              }}
             >
-              -
+              <Text
+                style={{
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  fontSize: 20,
+                }}
+              >
+                -
+              </Text>
+            </TouchableOpacity>
+            <Text
+              style={[
+                styles.routineTitle,
+                { color: "#FFFFFF", textAlign: "center" },
+              ]}
+            >
+              {workout.workoutID}
             </Text>
-          </TouchableOpacity> */}
-          <Text
-            style={[
-              styles.routineTitle,
-              { color: "#FFFFFF", textAlign: "center" },
-            ]}
-          >
-            {workout.name}
-          </Text>
+          </View>
           {!showDetails[index] && (
             <Text style={[styles.routineTitle, { textAlign: "center" }]}>
-              Sets:{workout.sets} Reps:{workout.reps} Weight:{workout.weight}
+              Sets:{workout.NumSets} Reps:{workout.NumRepsPerSet} Weight:
+              {workout.WeightLifted}
             </Text>
           )}
         </TouchableOpacity>
         {/* Sets,Reps,Weight Adjustments Below */}
-        {showDetails[index] && (
+        {/* {showDetails[index] && (
           <View>
             <Text style={[styles.detailsText, { fontSize: 15 }]}>Sets</Text>
             <View
@@ -191,7 +306,7 @@ const RoutineWorkouts = ({ navigation, route }) => {
               </TouchableOpacity>
             </View>
           </View>
-        )}
+        )} */}
       </View>
     ));
   };
@@ -207,9 +322,7 @@ const RoutineWorkouts = ({ navigation, route }) => {
           }}
         >
           <TouchableOpacity
-            onPress={() =>
-              navigation.navigate("RoutinePage", { routine, index })
-            }
+            onPress={() => navigation.navigate("RoutinePage", { routine })}
             style={{
               width: 50,
               height: 50,
@@ -235,6 +348,7 @@ const RoutineWorkouts = ({ navigation, route }) => {
               navigation.navigate("CatagoryWorkouts", {
                 cat: catdata[0],
                 adding: "true",
+                routine,
               });
             }}
             style={{
@@ -251,56 +365,148 @@ const RoutineWorkouts = ({ navigation, route }) => {
             <Text
               style={{ textAlign: "center", fontSize: 30, fontWeight: "bold" }}
             >
-              E
+              +
             </Text>
           </TouchableOpacity>
         </View>
         <View style={{ flexDirection: "row" }}>
-          <TouchableOpacity style={styles.days}>
+          <TouchableOpacity
+            style={[
+              styles.days,
+              { backgroundColor: dayss[0] === 1 ? "#000000" : "#FFFFFF" },
+            ]}
+            onPress={() => {
+              // console.log("Before:" + dayss);
+              handleDayClick(0);
+            }}
+          >
             <Text
-              style={{ textAlign: "center", fontWeight: "bold", fontSize: 20 }}
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: 20,
+                color: dayss[0] === 1 ? "#B8F14A" : "#000000",
+              }}
             >
               S
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.days}>
+          <TouchableOpacity
+            style={[
+              styles.days,
+              { backgroundColor: dayss[1] === 1 ? "#000000" : "#FFFFFF" },
+            ]}
+            onPress={() => {
+              handleDayClick(1);
+            }}
+          >
             <Text
-              style={{ textAlign: "center", fontWeight: "bold", fontSize: 20 }}
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: 20,
+                color: dayss[1] === 1 ? "#B8F14A" : "#000000",
+              }}
             >
               M
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.days}>
+          <TouchableOpacity
+            style={[
+              styles.days,
+              { backgroundColor: dayss[2] === 1 ? "#000000" : "#FFFFFF" },
+            ]}
+            onPress={() => {
+              handleDayClick(2);
+            }}
+          >
             <Text
-              style={{ textAlign: "center", fontWeight: "bold", fontSize: 20 }}
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: 20,
+                color: dayss[2] === 1 ? "#B8F14A" : "#000000",
+              }}
             >
               T
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.days}>
+          <TouchableOpacity
+            style={[
+              styles.days,
+              { backgroundColor: dayss[3] === 1 ? "#000000" : "#FFFFFF" },
+            ]}
+            onPress={() => {
+              handleDayClick(3);
+            }}
+          >
             <Text
-              style={{ textAlign: "center", fontWeight: "bold", fontSize: 20 }}
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: 20,
+                color: dayss[3] === 1 ? "#B8F14A" : "#000000",
+              }}
             >
               W
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.days}>
+          <TouchableOpacity
+            style={[
+              styles.days,
+              { backgroundColor: dayss[4] === 1 ? "#000000" : "#FFFFFF" },
+            ]}
+            onPress={() => {
+              handleDayClick(4);
+            }}
+          >
             <Text
-              style={{ textAlign: "center", fontWeight: "bold", fontSize: 20 }}
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: 20,
+                color: dayss[4] === 1 ? "#B8F14A" : "#000000",
+              }}
             >
               T
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.days}>
+          <TouchableOpacity
+            style={[
+              styles.days,
+              { backgroundColor: dayss[5] === 1 ? "#000000" : "#FFFFFF" },
+            ]}
+            onPress={() => {
+              handleDayClick(5);
+            }}
+          >
             <Text
-              style={{ textAlign: "center", fontWeight: "bold", fontSize: 20 }}
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: 20,
+                color: dayss[5] === 1 ? "#B8F14A" : "#000000",
+              }}
             >
               F
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.days}>
+          <TouchableOpacity
+            style={[
+              styles.days,
+              { backgroundColor: dayss[6] === 1 ? "#000000" : "#FFFFFF" },
+            ]}
+            onPress={() => {
+              handleDayClick(6);
+            }}
+          >
             <Text
-              style={{ textAlign: "center", fontWeight: "bold", fontSize: 20 }}
+              style={{
+                textAlign: "center",
+                fontWeight: "bold",
+                fontSize: 20,
+                color: dayss[6] === 1 ? "#B8F14A" : "#000000",
+              }}
             >
               S
             </Text>

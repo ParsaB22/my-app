@@ -119,34 +119,34 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     paddingHorizontal: 20,
-    backgroundColor: "#565656",
+    backgroundColor: "#2c2c2e",
     paddingTop: 30, // Add some padding at the top to make space for the header
   },
   contentContainer: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    width: "100%",
+    // width: "100%",
   },
 
   heading: {
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
-    color: "#FFFFFF",
+    color: "#B8F14A",
   },
   subHeading: {
     fontSize: 18,
     fontWeight: "bold",
     marginBottom: 10,
-    color: "#FFFFFF",
+    color: "#B8F14A",
   },
   scheduleContainer: {
     marginTop: 10,
   },
   todayWorkoutContainer: {
     position: "absolute",
-    top: 175, // Adjust this value to move the title higher or lower
+    top: 174, // Adjust this value to move the title higher or lower
     left: 0, // Optional, if you want to align it to the left
     right: 0, // Optional, if you want to align it to the right
     alignItems: "center",
@@ -198,6 +198,7 @@ const styles = StyleSheet.create({
   workoutExercisesContainer: {
     alignItems: "center",
     marginTop: 15,
+    top: 250,
     position: "absolute",
   },
   workoutExerciseItem: {
@@ -206,20 +207,20 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     backgroundColor: "#B8F14A",
     borderRadius: 10,
-    padding: 8,
+    // padding: 8,
     marginVertical: 5,
-    width: "90%", // Adjust the width to your preference
+    width: "100%", // Adjust the width to your preference
     borderRadius: 60, // Increase the border radius for a bigger rounded box
     paddingVertical: 15, // Increase the padding for more height
     paddingHorizontal: 45, // Increase the padding for more width
-    alignItems: "center",
+    // alignItems: "center",
     borderWidth: 2, // Add a white border with a width of 2 pixels
     borderColor: "#FFFFFF",
   },
   workoutExerciseText: {
     fontSize: 20, // Increase the font size for the text
     fontWeight: "bold",
-    color: "#FFFFFF",
+    color: "#000000",
   },
 });
 

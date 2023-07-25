@@ -18,13 +18,20 @@ import { ImageData } from "../components/ImageData";
 export default function CatagoryWorkouts({ navigation, route }) {
   const { cat } = route.params;
   const { adding } = route.params;
+  const { routine } = route.params;
+
+  const [searchQuery, setSearchQuery] = useState("");
+
   const renderWorkBoxes = () => {
-    return cat.workouts.map((workout, index) => (
+    const filteredWorkouts = cat.workouts.filter((workout) =>
+      workout.workoutName.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    return filteredWorkouts.map((workout, index) => (
       <TouchableOpacity
         key={index}
         onPress={() => {
           // Handle navigation to the page where workouts can be added to the selected routine
-          navigation.navigate("WorkoutDetails", { workout, adding });
+          navigation.navigate("WorkoutDetails", { workout, adding, routine });
           // console.log("Navigate to routine page:", routine.name);
         }}
         style={[styles.catBox, { flexDirection: "row" }]}
@@ -79,7 +86,13 @@ export default function CatagoryWorkouts({ navigation, route }) {
           <Text style={styles.headerTitle}>{cat.name}</Text>
         </View>
         <View style={styles.searchbar}>
-          <TextInput placeholder="Search" />
+          <TextInput
+            placeholder="Search"
+            value={searchQuery}
+            onChangeText={(value) => {
+              setSearchQuery(value);
+            }}
+          />
         </View>
       </View>
       {/* Must make into FlatList */}

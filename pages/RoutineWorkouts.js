@@ -118,6 +118,30 @@ const RoutineWorkouts = ({ navigation, route }) => {
     updateRoutine();
   }, [dayss]);
 
+  const showAlert = (workout) => {
+    Alert.alert(
+      "Delete Workout?", // Title of the alert
+      `${workout.workoutID}`, // Message of the alert
+      [
+        // Buttons for the alert
+        {
+          text: "Yes",
+          onPress: () => {
+            deleteWorkout(workout._id);
+            fetchWorkouts();
+          },
+          // style: "cancel",
+        },
+        {
+          text: "No",
+          onPress: () => console.log("Cancle Pressed"),
+          style: "cancel",
+        },
+      ],
+      { cancelable: true } // Specifies whether the alert can be dismissed by tapping outside the popup
+    );
+  };
+
   const renderWorkoutBoxes = () => {
     return workouts.map((workout, index) => (
       <View
@@ -150,8 +174,7 @@ const RoutineWorkouts = ({ navigation, route }) => {
                 { backgroundColor: "#FF0000", position: "absolute", left: 0 },
               ]}
               onPress={() => {
-                deleteWorkout(workout._id);
-                fetchWorkouts();
+                showAlert(workout);
               }}
             >
               <Text

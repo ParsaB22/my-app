@@ -197,6 +197,8 @@ const styles = StyleSheet.create({
     width: 110, // Adjust the width of the image as needed
     height: 110,
     resizeMode: "contain", // Set the image resize mode
+    overflow: "hidden",
+    borderRadius: 20,
   },
 });
 

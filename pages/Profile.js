@@ -23,6 +23,7 @@ const ProfilePage = () => {
   const [username, setUsername] = useState("");
   const [pw, setPW] = useState("");
   const [email, setEmail] = useState("");
+  const [showPassword, setShow] = useState(true);
 
   const getUserData = async () => {
     try {
@@ -33,8 +34,7 @@ const ProfilePage = () => {
       setUserData(ud);
       setIsLoading(false);
 
-      console.log("ud: " + ud);
-      console.log(userData);
+      console.log(ud);
       // setName(userData.firstName + " " + userData.lastName);
       // setUsername(userData.userNamer)
       // setEmail(userData.email);
@@ -51,8 +51,8 @@ const ProfilePage = () => {
     // After fetching the user data, set the values for name, username, pw, and email
     if (userData) {
       setName(userData.firstName + " " + userData.lastName);
-      // setUsername(userData.username);
-      // setPW(userData.pw);
+      setUsername(userData.userName);
+      setPW(userData.password);
       setEmail(userData.email);
       console.log(userData);
     }
@@ -61,9 +61,18 @@ const ProfilePage = () => {
   if (isLoading) {
     return (
       <View
-        style={{ flex: 1, justifyContent: "center", alignContent: "center" }}
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignContent: "center",
+          backgroundColor: "#2c2c2e",
+        }}
       >
-        <ActivityIndicator size={"large"} />
+        <ActivityIndicator
+          size={"large"}
+          color={"#B8F14A"}
+          //   style={{ backgroundColor: "#0000 }}
+        />
       </View>
     );
   }
@@ -74,7 +83,6 @@ const ProfilePage = () => {
         <View style={styles.circle} />
         <View style={styles.profile} />
         <View style={styles.navBar} />
-
         <TextInput
           style={styles.firstEntryBox}
           placeholder="Full Name"
@@ -83,6 +91,7 @@ const ProfilePage = () => {
           onChangeText={(val) => setName(val)}
           value={name}
           color="white"
+          editable={false}
         />
 
         <TextInput
@@ -93,26 +102,64 @@ const ProfilePage = () => {
           onChangeText={(val2) => setUsername(val2)}
           value={username}
           color="white"
+          editable={false}
         />
-
-        <TextInput
-          style={styles.thirdEntryBox}
-          placeholder="Password"
-          placeholderTextColor="white"
-          textAlign="center"
-          onChangeText={(val3) => setPW(val3)}
-          value={pw}
-          color="white"
-        />
-
+        <View
+          style={[
+            styles.thirdEntryBox,
+            {
+              flexDirection: "row",
+              alignItems: "center",
+              alignContent: "center",
+            },
+          ]}
+        >
+          <TextInput
+            style={{
+              flex: 1,
+              padding: 2,
+              textAlign: "center",
+              alignSelf: "center",
+            }}
+            placeholder="Password"
+            placeholderTextColor="white"
+            textAlign="center"
+            secureTextEntry={showPassword}
+            value={pw}
+            color="white"
+            editable={false}
+          />
+          <TouchableOpacity
+            style={{
+              position: "absolute",
+              right: 0,
+              width: 50,
+              height: 50,
+              justifyContent: "center",
+            }}
+            onPress={() => {
+              if (showPassword === true) {
+                setShow(false);
+              } else {
+                setShow(true);
+              }
+            }}
+          >
+            <Text style={{ color: "#FFFFFF", textAlign: "center" }}>
+              {showPassword ? "-" : "O"}
+            </Text>
+          </TouchableOpacity>
+        </View>
         <TextInput
           style={styles.fourthEntryBox}
           placeholder="Email"
           placeholderTextColor="white"
           textAlign="center"
+          // onPress=
           onChangeText={(val4) => setEmail(val4)}
           value={email}
           color="white"
+          editable={false}
         />
 
         <View style={styles.signOut} />
@@ -185,6 +232,10 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 3,
     borderColor: "#757575",
+    textAlign: "center",
+    alignSelf: "center",
+    alignContent: "center",
+    alignItems: "center",
   },
 
   fourthEntryBox: {

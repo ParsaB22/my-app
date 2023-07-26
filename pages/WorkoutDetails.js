@@ -67,6 +67,8 @@ export default function WorkoutDetails({ navigation, route }) {
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={{
+              position: "absolute",
+              zIndex: 1,
               width: 50,
               height: 50,
               backgroundColor: "#FFFFFF",
@@ -195,30 +197,30 @@ export default function WorkoutDetails({ navigation, route }) {
         </ScrollView>
       ) : (
         // {/* looking at detail option */}
-        <View
-          style={{
-            // backgroundColor: "#ffffff",
-            // justifyContent: "center",
-            alignItems: "center",
-            // alignContent: "space-between",
-          }}
-        >
-          <Image
-            source={
-              ImageData[
-                workout.workoutName.toLowerCase().replace(/\s+/g, "") +
-                  "details"
-              ]
-            }
-          />
-          <Text style={[styles.paragraph, { color: "#ffffff" }]}>
-            {
-              ImageData[
-                workout.workoutName.toLowerCase().replace(/\s+/g, "") + "text"
-              ]
-            }
-          </Text>
-        </View>
+        <ScrollView>
+          <View
+            style={{
+              // backgroundColor: "#ffffff",
+              // justifyContent: "center",
+              alignItems: "center",
+              // alignContent: "space-between",
+            }}
+          >
+            <Image
+              source={
+                ImageData[workout.workoutName.toLowerCase().replace(/\s+/g, "")]
+              }
+              style={{ width: "100%", height: 400 }}
+            />
+            <Text style={[styles.paragraph, { color: "#ffffff" }]}>
+              {
+                ImageData[
+                  workout.workoutName.toLowerCase().replace(/\s+/g, "") + "text"
+                ]
+              }
+            </Text>
+          </View>
+        </ScrollView>
       )}
     </View>
   );

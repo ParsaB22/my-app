@@ -67,6 +67,7 @@ export default function CatagoryWorkouts({ navigation, route }) {
           <TouchableOpacity
             onPress={() => navigation.goBack()}
             style={{
+              position: "absolute",
               width: 50,
               height: 50,
               backgroundColor: "#FFFFFF",
@@ -75,6 +76,7 @@ export default function CatagoryWorkouts({ navigation, route }) {
               borderWidth: 3,
               justifyContent: "center",
               left: 10,
+              zIndex: 1,
             }}
           >
             <Text
@@ -208,7 +210,7 @@ const styles = StyleSheet.create({
     // alignItems: "flex-start", // Align the image to the left
     // paddingLeft: 20, // Add some space between the image and the button edge
     marginRight: 10,
-    borderRadius: 20,
+    borderRadius: 40,
     width: 75, // Adjust the width of the image as needed
     height: 75, // Adjust the height of the image as needed
   },
@@ -216,5 +218,7 @@ const styles = StyleSheet.create({
     width: 75,
     height: 75,
     resizeMode: "contain", // Set the image resize mode
+    borderRadius: 20,
+    overflow: "hidden",
   },
 });

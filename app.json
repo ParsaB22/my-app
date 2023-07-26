@@ -1,15 +1,15 @@
 {
   "expo": {
-    "name": "my-app",
-    "slug": "my-app",
+    "name": "Venom Gains",
+    "slug": "venom-gains-app",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/venomicon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/venom-gains-splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#2c2c2e"
     },
     "assetBundlePatterns": [
       "**/*"

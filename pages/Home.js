@@ -91,7 +91,7 @@ export default function HomePage({ navigation, route }) {
   const fetchWorkouts = async (routineID) => {
     var obj = { routineId: routineID };
     var js = JSON.stringify(obj);
-    console.log(js);
+    // console.log(js);
     try {
       const response = await fetch(bp.buildPath("api/searchWorkouts"), {
         method: "POST",
@@ -100,7 +100,7 @@ export default function HomePage({ navigation, route }) {
       });
       var data = JSON.parse(await response.text());
 
-      console.log(data);
+      // console.log(data);
       setWorkouts(data.results); // Update the routines state with the fetched data
     } catch (error) {
       console.error("Error fetching routines:", error);
@@ -196,7 +196,9 @@ export default function HomePage({ navigation, route }) {
             <Text style={[styles.dayTitle]}>{routine.name}</Text>
           </View>
         </TouchableOpacity>
-        {selectedRoutine === routine && renderWorkoutBoxes()}
+        {selectedRoutine === routine &&
+          workouts !== null &&
+          renderWorkoutBoxes()}
       </View>
     ));
   };
@@ -207,11 +209,12 @@ export default function HomePage({ navigation, route }) {
     if (selectedRoutine === routine) {
       // Deselect the routine if it's already selected
       setSelectedRoutine(null);
-      // setWorkouts(null);
+      setWorkouts(null);
     } else {
       // Fetch workouts for the selected routine
-      fetchWorkouts(routine.routineID);
       setSelectedRoutine(routine);
+      setWorkouts(null); // Set workouts to null to clear the previous workouts data
+      fetchWorkouts(routine.routineID);
     }
   };
   const renderWorkoutBoxes = () => {
@@ -253,14 +256,12 @@ export default function HomePage({ navigation, route }) {
     fillDays();
   }, [allRoutines]);
 
+  // useEffect(() => {}, [workouts]);
+  // // useEffect(() => {}, []);
   // useEffect(() => {
   //   // Fetch workouts whenever a routine is selected
-  //   if (selectedRoutine) {
-  //     fetchWorkouts(selectedRoutine.routineID);
-  //   } else {
-  //     // If no routine is selected, reset the workouts state to an empty array
-  //     setWorkouts([]);
-  //   }
+  //   renderSelectedDayRoutines();
+  //   // If no routine is selected, reset the workouts state to an empty array
   // }, [selectedRoutine]);
   //////////////////////////////////////////////////////////////////////////////////////////
   ///////////////////////////////////loading//////////////////////////////////////////////
@@ -269,9 +270,18 @@ export default function HomePage({ navigation, route }) {
   if (isLoading) {
     return (
       <View
-        style={{ flex: 1, justifyContent: "center", alignContent: "center" }}
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignContent: "center",
+          backgroundColor: "#2c2c2e",
+        }}
       >
-        <ActivityIndicator size={"large"} />
+        <ActivityIndicator
+          size={"large"}
+          color={"#B8F14A"}
+          //   style={{ backgroundColor: "#0000 }}
+        />
       </View>
     );
   }
@@ -383,7 +393,6 @@ const styles = StyleSheet.create({
   },
   routineBox: {
     backgroundColor: "#2C2C2C",
-    // padding: 20,
     marginHorizontal: 25,
     marginBottom: 20,
     borderRadius: 10,

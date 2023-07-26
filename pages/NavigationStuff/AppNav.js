@@ -13,9 +13,18 @@ export default function AppNav() {
   if (isLoading) {
     return (
       <View
-        style={{ flex: 1, justifyContent: "center", alignContent: "center" }}
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignContent: "center",
+          backgroundColor: "#2c2c2e",
+        }}
       >
-        <ActivityIndicator size={"large"} />
+        <ActivityIndicator
+          size={"large"}
+          color={"#B8F14A"}
+          //   style={{ backgroundColor: "#0000 }}
+        />
       </View>
     );
   }

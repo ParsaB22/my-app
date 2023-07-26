@@ -196,13 +196,48 @@ export default function RoutinePage({ navigation, route }) {
     setShowInputName(false);
   };
 
+  const showAlert = (routine) => {
+    Alert.alert(
+      `Delete ${routine.name}?`, // Title of the alert
+      ``, // Message of the alert
+      [
+        // Buttons for the alert
+        {
+          text: "Yes",
+          onPress: () => {
+            deleteAllWorkouts(routine.routineID);
+            deleteRoutine(routine.routineID);
+            fetchRoutines();
+          },
+          // style: "cancel",
+        },
+        {
+          text: "No",
+          onPress: () => console.log("Cancle Pressed"),
+          style: "cancel",
+        },
+      ],
+      // styles={{backgroundColor:"#000000"}},
+
+      { cancelable: true } // Specifies whether the alert can be dismissed by tapping outside the popup
+    );
+  };
   //Small loading page because fetchroutines and getuserdata isnt instant and will cause error cause some values are null
   if (isLoading) {
     return (
       <View
-        style={{ flex: 1, justifyContent: "center", alignContent: "center" }}
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignContent: "center",
+          backgroundColor: "#2c2c2e",
+        }}
       >
-        <ActivityIndicator size={"large"} />
+        <ActivityIndicator
+          size={"large"}
+          color={"#B8F14A"}
+          //   style={{ backgroundColor: "#0000 }}
+        />
       </View>
     );
   }
@@ -230,9 +265,10 @@ export default function RoutinePage({ navigation, route }) {
               { backgroundColor: "#FF0000", position: "absolute", left: 0 },
             ]}
             onPress={() => {
-              deleteAllWorkouts(routine.routineID);
-              deleteRoutine(routine.routineID);
-              fetchRoutines();
+              showAlert(routine);
+              // deleteAllWorkouts(routine.routineID);
+              // deleteRoutine(routine.routineID);
+              // fetchRoutines();
             }}
           >
             <Text
@@ -276,7 +312,7 @@ export default function RoutinePage({ navigation, route }) {
       )}
       <View style={styles.headerBox}>
         <Text style={styles.headerTitle}>Routines</Text>
-        <TouchableOpacity onPress={handleAddButton} style={styles.addButton}>
+        <TouchableOpacity onPress={handleAddCustom} style={styles.addButton}>
           <Text style={styles.addButtonIcon}>+</Text>
         </TouchableOpacity>
       </View>
@@ -356,6 +392,8 @@ const styles = StyleSheet.create({
     color: "#000000",
   },
   addButton: {
+    position: "absolute",
+    right: 20,
     backgroundColor: "#FFFFFF",
     width: 40,
     height: 40,

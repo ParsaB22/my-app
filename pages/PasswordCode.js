@@ -15,6 +15,7 @@ import {
   generateRandomNumber,
 } from "./EmailVerification";
 import BackButt from "../components/BackButton";
+import { Path, Rect, Svg } from "react-native-svg";
 
 //somehow store the code the was sent to email.
 //have onPress for Verify button handle if the code from email matches user input let them change their password
@@ -69,10 +70,65 @@ export default function PasswordCode({ navigation, route }) {
     <SafeAreaView style={styles.container}>
       <View style={styles.box}>
         {/*will be a box for now*/}
-        <BackButt navigation={navigation} />
-
-        <Text style={{ alignSelf: "center" }}>Verify Your Email</Text>
-        <View style={styles.mail} />
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{
+            position: "absolute",
+            width: 50,
+            height: 50,
+            backgroundColor: "#FFFFFF",
+            borderRadius: 100,
+            borderColor: "#000000",
+            borderWidth: 3,
+            justifyContent: "center",
+            left: 30,
+            top: 10,
+            zIndex: 1,
+          }}
+        >
+          <Text
+            style={{ textAlign: "center", fontSize: 30, fontWeight: "bold" }}
+          >
+            {"<"}
+          </Text>
+        </TouchableOpacity>
+        <Text
+          style={[
+            styles.dirText,
+            {
+              position: "absolute",
+              alignSelf: "center",
+              fontSize: 26,
+              color: "#000000",
+            },
+          ]}
+        >
+          Verify Your Email
+        </Text>
+        <View style={{ alignSelf: "center", position: "absolute" }}>
+          <Svg
+            width="210"
+            height="210"
+            viewBox="0 0 210 210"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <Rect
+              x="35"
+              y="52.5"
+              width="140"
+              height="105"
+              rx="2"
+              stroke="black"
+              strokeWidth={5}
+            />
+            <Path
+              d="M35 78.75L104.106 113.303C104.669 113.584 105.331 113.584 105.894 113.303L175 78.75"
+              stroke="black"
+              strokeWidth={5}
+            />
+          </Svg>
+        </View>
       </View>
       <Text style={styles.dirText}>
         Please enter the 4 digit code sent to your email.

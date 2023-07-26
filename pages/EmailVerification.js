@@ -10,9 +10,13 @@ import {
   StatusBar,
 } from "react-native";
 import BackButt from "../components/BackButton";
-import axios from "axios";
 import emailjs from "emailjs-com";
+import uuid from "uuid-js";
+import { Path, Rect, Svg } from "react-native-svg";
+
 emailjs.init("z9ryOjh08tS00nneR");
+
+let bp = require("../components/Path.js");
 
 export const generateRandomNumber = () => {
   const min = 0;
@@ -43,6 +47,34 @@ export const sendVerificationEmail = async (email, code, template) => {
     // Handle email sending errors
     console.log("Error sending verification email:", error);
     // Display an error message or take appropriate action
+  }
+};
+const registerUser = async (account) => {
+  var obj = {
+    userID: uuid.create().toString(),
+    firstName: account.firstname,
+    lastName: account.lastname,
+    login: account.username,
+    password: account.password,
+    email: account.email,
+  };
+  var js = JSON.stringify(obj);
+  try {
+    const response = await fetch(bp.buildPath("api/register"), {
+      method: "POST",
+      body: js,
+      headers: { "Content-Type": "application/json" },
+    });
+    // console.log(response);
+    var data = JSON.parse(await response.text());
+    console.log(data);
+    if (data.error.length > 0) {
+      console.log("Unable to add account");
+    } else {
+      console.log("Account has been added");
+    }
+  } catch (error) {
+    console.error("Error adding Account:", error);
   }
 };
 
@@ -83,7 +115,8 @@ export default function EmailV({ navigation, route }) {
     if (verificationCode == userInputCode) {
       console.log("Verification code matches");
       // Proceed with account registration and data storage in the database HERE
-      navigation.navigate("EmailConfirmed", { accountData });
+      registerUser(accountData);
+      navigation.navigate("EmailConfirmed");
     } else {
       setValidState(true);
       setErrorMessage("Verification code does not match");
@@ -96,10 +129,65 @@ export default function EmailV({ navigation, route }) {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.box}>
-        <BackButt navigation={navigation} />
-
-        <Text style={styles.boxText}>Verify Your Email</Text>
-        <View style={styles.mail} />
+        <TouchableOpacity
+          onPress={() => navigation.goBack()}
+          style={{
+            position: "absolute",
+            width: 50,
+            height: 50,
+            backgroundColor: "#FFFFFF",
+            borderRadius: 100,
+            borderColor: "#000000",
+            borderWidth: 3,
+            justifyContent: "center",
+            left: 30,
+            top: 10,
+            zIndex: 1,
+          }}
+        >
+          <Text
+            style={{ textAlign: "center", fontSize: 30, fontWeight: "bold" }}
+          >
+            {"<"}
+          </Text>
+        </TouchableOpacity>
+        <Text
+          style={[
+            styles.dirText,
+            {
+              position: "absolute",
+              alignSelf: "center",
+              fontSize: 26,
+              color: "#000000",
+            },
+          ]}
+        >
+          Verify Your Email
+        </Text>
+        <View style={{ alignSelf: "center", position: "absolute" }}>
+          <Svg
+            width="210"
+            height="210"
+            viewBox="0 0 210 210"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <Rect
+              x="35"
+              y="52.5"
+              width="140"
+              height="105"
+              rx="2"
+              stroke="black"
+              strokeWidth={5}
+            />
+            <Path
+              d="M35 78.75L104.106 113.303C104.669 113.584 105.331 113.584 105.894 113.303L175 78.75"
+              stroke="black"
+              strokeWidth={5}
+            />
+          </Svg>
+        </View>
       </View>
 
       <Text style={styles.dirText}>
